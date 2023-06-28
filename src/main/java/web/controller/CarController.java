@@ -4,30 +4,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import web.service.CarService;
-
-import javax.servlet.http.HttpServletRequest;
+import org.springframework.web.bind.annotation.RequestParam;
+import web.service.CarServiceImp;
 
 @Controller
 public class CarController {
 
-    CarService carService;
+    CarServiceImp carServiceImp;
 
     @Autowired
-    public CarController(CarService carService) {
-        this.carService = carService;
+    public CarController(CarServiceImp carServiceImp) {
+        this.carServiceImp = carServiceImp;
     }
 
     @GetMapping("/cars")
-    public String printCar(HttpServletRequest request, Model model) {
-        String count = request.getParameter("count");
-        if (count == null) {
-            model.addAttribute("cars", carService.getListCars(carService.getCount()));
-        } else if (Integer.parseInt(count) >= 5) {
-            model.addAttribute("cars", carService.getListCars(carService.getCount()));
-        } else {
-            model.addAttribute("cars", carService.getListCars(Integer.parseInt(count)));
-        }
+    public String printCar(@RequestParam(value = "count", defaultValue = "5") int count, Model model) {
+        model.addAttribute("cars", carServiceImp.getListCars(count));
         return "cars";
     }
 }
